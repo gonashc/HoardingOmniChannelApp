@@ -1,0 +1,29 @@
+# =====================================================================
+# Build stage
+# =====================================================================
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy solution + project files first for better layer caching
+COPY backend/HoardingPlatform.sln ./
+COPY backend/src/Hoarding.API/Hoarding.API.csproj ./src/Hoarding.API/
+COPY backend/src/Hoarding.Application/Hoarding.Application.csproj ./src/Hoarding.Application/
+COPY backend/src/Hoarding.Domain/Hoarding.Domain.csproj ./src/Hoarding.Domain/
+COPY backend/src/Hoarding.Infrastructure/Hoarding.Infrastructure.csproj ./src/Hoarding.Infrastructure/
+
+RUN dotnet restore
+
+# Copy the rest and build
+COPY backend/ ./
+RUN dotnet publish src/Hoarding.API/Hoarding.API.csproj -c Release -o /app/publish
+
+# =====================================================================
+# Runtime stage
+# =====================================================================
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/publish .
+
+EXPOSE 5000
+ENV ASPNETCORE_URLS=http://+:5000
+ENTRYPOINT ["dotnet", "Hoarding.API.dll"]

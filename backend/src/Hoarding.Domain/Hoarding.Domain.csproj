@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- PostGIS geometry types (Point, etc.) used by HoardingSpec.Location.
+         The Npgsql EF Core mapping in Infrastructure binds these to PostgreSQL geography columns. -->
+    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
+  </ItemGroup>
+</Project>

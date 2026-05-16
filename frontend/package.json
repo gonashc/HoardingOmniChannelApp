@@ -1,0 +1,48 @@
+{
+  "name": "hoarding-platform-frontend",
+  "version": "0.1.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^17.3.0",
+    "@angular/common": "^17.3.0",
+    "@angular/compiler": "^17.3.0",
+    "@angular/core": "^17.3.0",
+    "@angular/forms": "^17.3.0",
+    "@angular/platform-browser": "^17.3.0",
+    "@angular/platform-browser-dynamic": "^17.3.0",
+    "@angular/router": "^17.3.0",
+    "leaflet": "^1.9.4",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.3",
+
+    "@sentry/angular": "^8.40.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-trace-web": "^1.27.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.54.0",
+    "@opentelemetry/instrumentation": "^0.54.0",
+    "@opentelemetry/instrumentation-fetch": "^0.54.0",
+    "@opentelemetry/instrumentation-xml-http-request": "^0.54.0",
+    "@opentelemetry/instrumentation-document-load": "^0.41.0",
+    "@opentelemetry/resources": "^1.27.0",
+    "@opentelemetry/semantic-conventions": "^1.27.0",
+    "@opentelemetry/sdk-trace-base": "^1.27.0",
+    "@opentelemetry/context-zone": "^1.27.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.3.0",
+    "@angular/cli": "^17.3.0",
+    "@angular/compiler-cli": "^17.3.0",
+    "@types/leaflet": "^1.9.8",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16",
+    "typescript": "~5.4.0"
+  }
+}

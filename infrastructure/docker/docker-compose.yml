@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: hoardly-db
+    environment:
+      POSTGRES_DB: hoarding_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Mount each SQL file individually at the init root. Postgres's entrypoint
+      # only runs files at the TOP LEVEL of /docker-entrypoint-initdb.d/, not
+      # subdirectories. Numeric prefixes control execution order.
+      - ../../database/migrations/001_initial_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ../../database/seeds/001_seed_india.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hoarding_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile.api
+    container_name: hoardly-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=hoarding_db;Username=postgres;Password=postgres"
+      Jwt__Secret: "dev-only-secret-replace-with-32-char-or-longer-random-string-please"
+      Jwt__Issuer: "HoardingPlatform"
+      Jwt__Audience: "HoardingPlatformUsers"
+      Jwt__ExpiryHours: "24"
+
+      # ===== Observability (optional, left blank → SDKs become no-ops) =====
+      # Sentry: paste a DSN here or set SENTRY_DSN in your shell before `up`.
+      SENTRY_DSN: "${SENTRY_DSN:-}"
+
+      # OpenTelemetry: standard OTLP env vars. Examples:
+      #   Grafana Cloud:  OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-<region>.grafana.net/otlp
+      #                   OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic <base64-of-instance-id:token>
+      #   Local Collector: OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      OTEL_EXPORTER_OTLP_ENDPOINT: "${OTEL_EXPORTER_OTLP_ENDPOINT:-}"
+      OTEL_EXPORTER_OTLP_HEADERS: "${OTEL_EXPORTER_OTLP_HEADERS:-}"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "${OTEL_EXPORTER_OTLP_PROTOCOL:-grpc}"
+      OTEL_SERVICE_NAME: "hoardly-api"
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile.web
+    container_name: hoardly-web
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
