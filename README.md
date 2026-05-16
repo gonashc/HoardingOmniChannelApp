@@ -248,9 +248,9 @@ See [`docs/observability.md`](docs/observability.md) for the 10-minute setup wit
 | Phase 5 | Add radio, print, DOOH network channels |
 | Phase 6 | AI brief generator + creator-brand match recommendations |
 | Phase 7 | Programmatic DOOH (DSP integration) + dynamic pricing |
-
+s
 ---
 
 ## License
 
-Proprietary — Hoardly Technologies Pvt Ltd.
+Proprietary — Vedanth Tech Solutions LLC.
